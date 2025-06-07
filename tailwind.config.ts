@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,30 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				pink: {
+					50: 'hsl(var(--pink-50))',
+					100: 'hsl(var(--pink-100))',
+					200: 'hsl(var(--pink-200))',
+					300: 'hsl(var(--pink-300))',
+					400: 'hsl(var(--pink-400))',
+					500: 'hsl(var(--pink-500))',
+					600: 'hsl(var(--pink-600))',
+					700: 'hsl(var(--pink-700))',
+					800: 'hsl(var(--pink-800))',
+					900: 'hsl(var(--pink-900))',
+				},
+				rose: {
+					100: 'hsl(var(--rose-100))',
+					200: 'hsl(var(--rose-200))',
+					300: 'hsl(var(--rose-300))',
+					400: 'hsl(var(--rose-400))',
+					500: 'hsl(var(--rose-500))',
+				},
+				magenta: {
+					400: 'hsl(var(--magenta-400))',
+					500: 'hsl(var(--magenta-500))',
+					600: 'hsl(var(--magenta-600))',
 				}
 			},
 			borderRadius: {
@@ -89,6 +114,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backdropBlur: {
+				xs: '2px',
 			}
 		}
 	},
