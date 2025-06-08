@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Calculator as CalculatorIcon, Settings } from 'lucide-react';
-import { Switch } from '../components/ui/switch';
+import { Calculator as CalculatorIcon } from 'lucide-react';
+import History from './History';
+
+interface HistoryItem {
+  id: number;
+  expression: string;
+  result: string;
+  timestamp: Date;
+}
 
 const Calculator = () => {
   const [display, setDisplay] = useState('0');
@@ -8,6 +15,26 @@ const Calculator = () => {
   const [operation, setOperation] = useState<string | null>(null);
   const [waitingForOperand, setWaitingForOperand] = useState(false);
   const [showScientific, setShowScientific] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [historyId, setHistoryId] = useState(1);
+
+  const addToHistory = (expression: string, result: string) => {
+    const newHistoryItem: HistoryItem = {
+      id: historyId,
+      expression,
+      result,
+      timestamp: new Date()
+    };
+    
+    setHistory(prev => {
+      const updated = [newHistoryItem, ...prev];
+      // Keep only the latest 20 items
+      return updated.slice(0, 20);
+    });
+    
+    setHistoryId(prev => prev + 1);
+  };
 
   const inputNumber = (num: string) => {
     if (waitingForOperand) {
@@ -51,6 +78,12 @@ const Calculator = () => {
       const currentValue = previousValue || 0;
       const newValue = calculate(currentValue, inputValue, operation);
 
+      // Add to history when calculation is performed
+      if (nextOperation === '=') {
+        const expression = `${currentValue} ${operation} ${inputValue}`;
+        addToHistory(expression, String(newValue));
+      }
+
       setDisplay(String(newValue));
       setPreviousValue(newValue);
     }
@@ -92,6 +125,9 @@ const Calculator = () => {
         return;
     }
 
+    // Add scientific operations to history
+    addToHistory(`${scientificOp}(${inputValue})`, String(result));
+
     setDisplay(String(result));
     setWaitingForOperand(true);
   };
@@ -122,6 +158,31 @@ const Calculator = () => {
     };
   };
 
+  const selectHistoryItem = (item: HistoryItem) => {
+    setDisplay(item.result);
+    setShowHistory(false);
+    setWaitingForOperand(true);
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+  };
+
+  if (showHistory) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-300 via-rose-300 to-pink-400 flex items-center justify-center p-4">
+        <div className="w-full max-w-lg mx-auto">
+          <History 
+            history={history}
+            onSelectItem={selectHistoryItem}
+            onClearHistory={clearHistory}
+            onBack={() => setShowHistory(false)}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-300 via-rose-300 to-pink-400 flex items-center justify-center p-4">
       <div className="w-full max-w-lg mx-auto">
@@ -132,16 +193,6 @@ const Calculator = () => {
             <h1 className="text-3xl font-bold text-white drop-shadow-lg">Scientific Pink Calc</h1>
           </div>
           <p className="text-white/80 text-sm mb-4">Your dreamy scientific calculator ✨</p>
-          
-          {/* Scientific Mode Toggle */}
-          <div className="flex items-center justify-center gap-3 bg-white/20 backdrop-blur-sm rounded-2xl p-3 border border-white/30">
-            <Settings className="w-4 h-4 text-white" />
-            <span className="text-white text-sm font-medium">Scientific Mode</span>
-            <Switch 
-              checked={showScientific}
-              onCheckedChange={setShowScientific}
-            />
-          </div>
         </div>
 
         {/* Calculator */}
@@ -153,6 +204,22 @@ const Calculator = () => {
                 {display}
               </div>
             </div>
+          </div>
+
+          {/* Mode and History Controls */}
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <button
+              onClick={handleButtonPress(() => setShowScientific(!showScientific))}
+              className="bg-gradient-to-b from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              {showScientific ? 'Hide Sci' : 'Show Sci'}
+            </button>
+            <button
+              onClick={handleButtonPress(() => setShowHistory(true))}
+              className="bg-gradient-to-b from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              History
+            </button>
           </div>
 
           {/* Scientific Functions - Conditionally Rendered */}
