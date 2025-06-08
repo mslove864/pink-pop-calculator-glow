@@ -26,11 +26,19 @@ const Calculator = () => {
     }
   };
 
-  const clear = () => {
+  const clearAll = () => {
     setDisplay('0');
     setPreviousValue(null);
     setOperation(null);
     setWaitingForOperand(false);
+  };
+
+  const clearLastDigit = () => {
+    if (display.length > 1) {
+      setDisplay(display.slice(0, -1));
+    } else {
+      setDisplay('0');
+    }
   };
 
   const performOperation = (nextOperation: string) => {
@@ -50,6 +58,43 @@ const Calculator = () => {
     setOperation(nextOperation);
   };
 
+  const performScientificOperation = (scientificOp: string) => {
+    const inputValue = parseFloat(display);
+    let result: number;
+
+    switch (scientificOp) {
+      case 'sin':
+        result = Math.sin(inputValue * Math.PI / 180);
+        break;
+      case 'cos':
+        result = Math.cos(inputValue * Math.PI / 180);
+        break;
+      case 'tan':
+        result = Math.tan(inputValue * Math.PI / 180);
+        break;
+      case 'log':
+        result = Math.log10(inputValue);
+        break;
+      case 'ln':
+        result = Math.log(inputValue);
+        break;
+      case 'sqrt':
+        result = Math.sqrt(inputValue);
+        break;
+      case 'square':
+        result = inputValue * inputValue;
+        break;
+      case 'inverse':
+        result = 1 / inputValue;
+        break;
+      default:
+        return;
+    }
+
+    setDisplay(String(result));
+    setWaitingForOperand(true);
+  };
+
   const calculate = (firstValue: number, secondValue: number, operation: string): number => {
     switch (operation) {
       case '+':
@@ -60,6 +105,8 @@ const Calculator = () => {
         return firstValue * secondValue;
       case '÷':
         return firstValue / secondValue;
+      case '^':
+        return Math.pow(firstValue, secondValue);
       case '=':
         return secondValue;
       default:
@@ -70,21 +117,20 @@ const Calculator = () => {
   const handleButtonPress = (callback: () => void) => {
     return () => {
       callback();
-      // Add visual feedback
       setTimeout(() => {}, 150);
     };
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-300 via-rose-300 to-pink-400 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm mx-auto">
+      <div className="w-full max-w-lg mx-auto">
         {/* Header */}
         <div className="text-center mb-8 animate-slide-in-down">
           <div className="flex items-center justify-center gap-3 mb-4">
             <CalculatorIcon className="w-8 h-8 text-white drop-shadow-lg" />
-            <h1 className="text-3xl font-bold text-white drop-shadow-lg">Pink Calc</h1>
+            <h1 className="text-3xl font-bold text-white drop-shadow-lg">Scientific Pink Calc</h1>
           </div>
-          <p className="text-white/80 text-sm">Your dreamy calculator ✨</p>
+          <p className="text-white/80 text-sm">Your dreamy scientific calculator ✨</p>
         </div>
 
         {/* Calculator */}
@@ -98,12 +144,86 @@ const Calculator = () => {
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* Scientific Functions Row */}
+          <div className="grid grid-cols-5 gap-2 mb-4">
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('sin'))}
+              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              sin
+            </button>
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('cos'))}
+              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              cos
+            </button>
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('tan'))}
+              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              tan
+            </button>
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('log'))}
+              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              log
+            </button>
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('ln'))}
+              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              ln
+            </button>
+          </div>
+
+          {/* Second Scientific Functions Row */}
+          <div className="grid grid-cols-5 gap-2 mb-4">
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('sqrt'))}
+              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              √
+            </button>
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('square'))}
+              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              x²
+            </button>
+            <button
+              onClick={handleButtonPress(() => performOperation('^'))}
+              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              x^y
+            </button>
+            <button
+              onClick={handleButtonPress(() => performScientificOperation('inverse'))}
+              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              1/x
+            </button>
+            <button
+              onClick={handleButtonPress(() => inputNumber(Math.PI.toString()))}
+              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+            >
+              π
+            </button>
+          </div>
+
+          {/* Main Calculator Buttons */}
           <div className="grid grid-cols-4 gap-3">
             {/* Row 1 */}
             <button
-              onClick={handleButtonPress(clear)}
-              className="col-span-2 bg-gradient-to-b from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 active:animate-button-press"
+              onClick={handleButtonPress(clearAll)}
+              className="bg-gradient-to-b from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 active:animate-button-press"
+            >
+              C
+            </button>
+            <button
+              onClick={handleButtonPress(clearLastDigit)}
+              className="bg-gradient-to-b from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 active:animate-button-press"
             >
               Clear
             </button>
@@ -216,7 +336,7 @@ const Calculator = () => {
 
         {/* Footer */}
         <div className="text-center mt-6">
-          <p className="text-white/60 text-xs">Made with 💖 for pink lovers</p>
+          <p className="text-white/60 text-xs">Made with 💖 for pink lovers - Now with science! 🧪</p>
         </div>
       </div>
     </div>
