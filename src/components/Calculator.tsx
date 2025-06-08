@@ -1,12 +1,13 @@
-
 import React, { useState } from 'react';
-import { Calculator as CalculatorIcon } from 'lucide-react';
+import { Calculator as CalculatorIcon, Settings } from 'lucide-react';
+import { Switch } from '../components/ui/switch';
 
 const Calculator = () => {
   const [display, setDisplay] = useState('0');
   const [previousValue, setPreviousValue] = useState<number | null>(null);
   const [operation, setOperation] = useState<string | null>(null);
   const [waitingForOperand, setWaitingForOperand] = useState(false);
+  const [showScientific, setShowScientific] = useState(true);
 
   const inputNumber = (num: string) => {
     if (waitingForOperand) {
@@ -130,7 +131,17 @@ const Calculator = () => {
             <CalculatorIcon className="w-8 h-8 text-white drop-shadow-lg" />
             <h1 className="text-3xl font-bold text-white drop-shadow-lg">Scientific Pink Calc</h1>
           </div>
-          <p className="text-white/80 text-sm">Your dreamy scientific calculator ✨</p>
+          <p className="text-white/80 text-sm mb-4">Your dreamy scientific calculator ✨</p>
+          
+          {/* Scientific Mode Toggle */}
+          <div className="flex items-center justify-center gap-3 bg-white/20 backdrop-blur-sm rounded-2xl p-3 border border-white/30">
+            <Settings className="w-4 h-4 text-white" />
+            <span className="text-white text-sm font-medium">Scientific Mode</span>
+            <Switch 
+              checked={showScientific}
+              onCheckedChange={setShowScientific}
+            />
+          </div>
         </div>
 
         {/* Calculator */}
@@ -144,73 +155,78 @@ const Calculator = () => {
             </div>
           </div>
 
-          {/* Scientific Functions Row */}
-          <div className="grid grid-cols-5 gap-2 mb-4">
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('sin'))}
-              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              sin
-            </button>
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('cos'))}
-              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              cos
-            </button>
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('tan'))}
-              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              tan
-            </button>
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('log'))}
-              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              log
-            </button>
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('ln'))}
-              className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              ln
-            </button>
-          </div>
+          {/* Scientific Functions - Conditionally Rendered */}
+          {showScientific && (
+            <>
+              {/* Scientific Functions Row */}
+              <div className="grid grid-cols-5 gap-2 mb-4">
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('sin'))}
+                  className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  sin
+                </button>
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('cos'))}
+                  className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  cos
+                </button>
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('tan'))}
+                  className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  tan
+                </button>
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('log'))}
+                  className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  log
+                </button>
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('ln'))}
+                  className="bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  ln
+                </button>
+              </div>
 
-          {/* Second Scientific Functions Row */}
-          <div className="grid grid-cols-5 gap-2 mb-4">
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('sqrt'))}
-              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              √
-            </button>
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('square'))}
-              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              x²
-            </button>
-            <button
-              onClick={handleButtonPress(() => performOperation('^'))}
-              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              x^y
-            </button>
-            <button
-              onClick={handleButtonPress(() => performScientificOperation('inverse'))}
-              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              1/x
-            </button>
-            <button
-              onClick={handleButtonPress(() => inputNumber(Math.PI.toString()))}
-              className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
-            >
-              π
-            </button>
-          </div>
+              {/* Second Scientific Functions Row */}
+              <div className="grid grid-cols-5 gap-2 mb-4">
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('sqrt'))}
+                  className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  √
+                </button>
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('square'))}
+                  className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  x²
+                </button>
+                <button
+                  onClick={handleButtonPress(() => performOperation('^'))}
+                  className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  x^y
+                </button>
+                <button
+                  onClick={handleButtonPress(() => performScientificOperation('inverse'))}
+                  className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  1/x
+                </button>
+                <button
+                  onClick={handleButtonPress(() => inputNumber(Math.PI.toString()))}
+                  className="bg-gradient-to-b from-indigo-400 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold py-3 px-3 rounded-xl shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95 text-sm"
+                >
+                  π
+                </button>
+              </div>
+            </>
+          )}
 
           {/* Main Calculator Buttons */}
           <div className="grid grid-cols-4 gap-3">
